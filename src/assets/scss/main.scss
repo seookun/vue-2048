@@ -1,3 +1,9 @@
+@use "sass:math";
+
+$tile-size: 110px;
+$tile-space: 15px;
+
+// base
 html,
 body {
   margin: 0;
@@ -5,4 +11,154 @@ body {
   background: #faf8ef;
   color: #776e65;
   font-family: "Clear Sans", "Helvetica Neue", Arial, sans-serif;
+}
+
+// tile view
+.tile-view {
+  position: relative;
+  width: $tile-size * 4 + $tile-space * 3;
+  height: $tile-size * 4 + $tile-space * 3;
+  margin: 60px auto;
+  padding: $tile-space;
+  border-radius: 6px;
+  background: #bbada0;
+}
+
+// tile
+.tile {
+  display: none;
+  position: absolute;
+  z-index: 10;
+  width: $tile-size;
+  height: $tile-size;
+  border-radius: 3px;
+  background: rgb(238 228 218 / 35%);
+  text-align: center;
+  font-size: 55px;
+  font-weight: bold;
+  line-height: $tile-size;
+
+  @for $position from 0 through 15 {
+    $i: math.floor($position / 4);
+    $j: $position % 4;
+    $x: ($j * $tile-size) + ($j * $tile-space);
+    $y: ($i * $tile-size) + ($i * $tile-space);
+
+    &.tile-position-#{$position} {
+      display: block;
+      transform: translate($x, $y);
+    }
+  }
+
+  &.tile-moved {
+    transition: 0.1s transform;
+  }
+
+  &.tile-old {
+    transition: 0.1s transform;
+    z-index: 5;
+  }
+
+  &.tile-new div {
+    animation: new 0.2s ease 0.1s;
+    animation-fill-mode: backwards;
+  }
+
+  &.tile-merged div {
+    animation: merged 0.2s ease 0.1s;
+    animation-fill-mode: backwards;
+  }
+
+  .tile-2 {
+    outline: 0.5px solid #f9f6f2;
+    border-radius: inherit;
+    color: #776e65;
+    background: #eee4da;
+  }
+
+  .tile-4 {
+    outline: 0.5px solid #f9f6f2;
+    border-radius: inherit;
+    color: #776e65;
+    background: #eee1c9;
+  }
+
+  .tile-8 {
+    outline: 0.5px solid #f9f6f2;
+    border-radius: inherit;
+    color: #f9f6f2;
+    background: #f3b27a;
+  }
+
+  .tile-16 {
+    outline: 0.5px solid #f9f6f2;
+    border-radius: inherit;
+    color: #f9f6f2;
+    background: #f69664;
+  }
+
+  .tile-32 {
+    outline: 0.5px solid #f9f6f2;
+    border-radius: inherit;
+    color: #f9f6f2;
+    background: #f77c5f;
+  }
+
+  .tile-64 {
+    outline: 0.5px solid #f9f6f2;
+    border-radius: inherit;
+    color: #f9f6f2;
+    background: #f75f3b;
+  }
+
+  .tile-128 {
+    outline: 0.5px solid #f9f6f2;
+    border-radius: inherit;
+    color: #f9f6f2;
+    background: #edd073;
+    font-size: 45px;
+  }
+
+  .tile-256 {
+    outline: 0.5px solid #f9f6f2;
+    border-radius: inherit;
+    color: #f9f6f2;
+    background: #edcc62;
+    font-size: 45px;
+  }
+
+  .tile-512 {
+    outline: 0.5px solid #f9f6f2;
+    border-radius: inherit;
+    color: #f9f6f2;
+    background: #edc950;
+    font-size: 45px;
+  }
+
+  .tile-1024 {
+    outline: 0.5px solid #f9f6f2;
+    border-radius: inherit;
+    color: #f9f6f2;
+    background: #edc53f;
+    font-size: 35px;
+  }
+
+  .tile-2048 {
+    outline: 0.5px solid #f9f6f2;
+    border-radius: inherit;
+    color: #f9f6f2;
+    background: #edc22e;
+    font-size: 35px;
+  }
+}
+
+@keyframes new {
+  from { transform: scale(0); }
+  to { transform: scale(1); }
+}
+
+@keyframes merged {
+  0% { transform: scale(0); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
 }

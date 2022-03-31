@@ -36,6 +36,8 @@ export default class Vue2048 {
 
   score = 0;
 
+  moves = 0;
+
   constructor(size = 4) {
     this.size = size;
 
@@ -138,6 +140,8 @@ export default class Vue2048 {
     await sleep();
 
     if (this.moveTiles(direction)) {
+      this.moves += 1;
+
       await sleep();
       this.addTile();
     }

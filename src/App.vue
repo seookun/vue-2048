@@ -6,6 +6,7 @@
 import {
   computed, defineComponent, onBeforeUnmount, onMounted, readonly, ref,
 } from 'vue';
+import { throttle } from 'lodash-es';
 import Vue2048 from '@/vue-2048';
 
 import TileView from '@/components/TileView.vue';
@@ -20,7 +21,7 @@ export default defineComponent({
     const tiles = computed(() => readonly(vue2048.value.tiles));
 
     // bind keydown event
-    const onKeydown = async (ev: KeyboardEvent) => {
+    const onKeydown = throttle(async (ev: KeyboardEvent) => {
       if (ev.key === 'ArrowLeft' || ev.keyCode === 37) {
         await vue2048.value.move(0);
       } if (ev.key === 'ArrowUp' || ev.keyCode === 38) {
@@ -30,7 +31,7 @@ export default defineComponent({
       } else if (ev.key === 'ArrowDown' || ev.keyCode === 40) {
         await vue2048.value.move(3);
       }
-    };
+    }, 100);
 
     onMounted(() => {
       window.addEventListener('keydown', onKeydown);

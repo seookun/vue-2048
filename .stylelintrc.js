@@ -15,9 +15,10 @@ module.exports = {
   rules: {
     'at-rule-no-unknown': [
       true,
-      { ignoreAtRules: ['use', 'extends', 'ignores', 'include', 'mixin', 'if', 'else', 'media', 'for'] },
+      { ignoreAtRules: ['use', 'extends', 'ignores', 'include', 'function', 'mixin', 'if', 'else', 'media', 'for'] },
     ],
     'order/order': ['custom-properties', 'declarations'],
     'order/properties-order': ['width', 'height'],
+    'function-no-unknown': null,
   },
 };

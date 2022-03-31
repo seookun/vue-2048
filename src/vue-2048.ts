@@ -26,12 +26,15 @@ export interface Tile {
   state: TileState;
 }
 
+// Left, Up, Right, Down
 export type Direction = 0 | 1 | 2 | 3;
 
 export default class Vue2048 {
   size;
 
   tiles: Tile[];
+
+  score = 0;
 
   constructor(size = 4) {
     this.size = size;
@@ -88,20 +91,22 @@ export default class Vue2048 {
 
     for (let i = 0; i < moveCount; i += 1) {
       const nextPosition = tile.position + moveWeight;
-      const nextPositionTiles = filter(this.tiles, ['position', nextPosition]);
+      const nextTiles = filter(this.tiles, ['position', nextPosition]);
 
-      if (!nextPositionTiles.length) {
+      if (!nextTiles.length) {
         tile.position = nextPosition;
         tile.state = TileState.Moved;
       } else {
-        const isMergeable = nextPositionTiles.length === 1
-            && nextPositionTiles[0].value === tile.value;
+        const nextTile = nextTiles[0];
+        const isMergeable = nextTiles.length === 1 && nextTile.value === tile.value;
 
         if (isMergeable) {
           tile.position = nextPosition;
           tile.state = TileState.Old;
-          nextPositionTiles[0].value *= 2;
-          nextPositionTiles[0].state = TileState.Merged;
+          nextTile.value *= 2;
+          nextTile.state = TileState.Merged;
+
+          this.score += nextTile.value;
         }
 
         break;

@@ -1,4 +1,5 @@
 <template>
+  {{ score }}
   <tile-view :tiles="tiles" />
 </template>
 
@@ -19,6 +20,7 @@ export default defineComponent({
   setup() {
     const vue2048 = ref(new Vue2048());
     const tiles = computed(() => readonly(vue2048.value.tiles));
+    const score = computed(() => vue2048.value.score);
 
     // bind keydown event
     const onKeydown = throttle(async (ev: KeyboardEvent) => {
@@ -43,6 +45,7 @@ export default defineComponent({
 
     return {
       tiles,
+      score,
     };
   },
 });

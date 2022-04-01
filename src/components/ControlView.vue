@@ -14,13 +14,18 @@
       </div>
     </div>
 
-    <a
-      class="restart-button"
-      @click="$emit('restart')"
-      @keyup="$emit('restart')"
-    >
-      New Game
-    </a>
+    <div class="intro">
+      <p>
+        Join the tiles, get to <strong>2048!</strong>
+      </p>
+
+      <a
+        @click="emitRestart"
+        @keyup="emitRestart"
+      >
+        New Game
+      </a>
+    </div>
   </div>
 </template>
 
@@ -40,8 +45,13 @@ export default defineComponent({
     },
   },
   emits: ['restart'],
-  setup() {
+  setup(props, context) {
+    const emitRestart = () => {
+      context.emit('restart');
+    };
+
     return {
+      emitRestart,
     };
   },
 });

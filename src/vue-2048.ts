@@ -1,12 +1,13 @@
 import {
-  filter, find, findIndex, map, some,
+  filter, find, findIndex, map, some, uniqueId,
 } from 'lodash-es';
 
 const AddTileFourProbablility = 0.1;
+const TileTransitionMilliseconds = 100;
 
-export function sleep(): Promise<void> {
+export function sleep(ms = 0): Promise<void> {
   return new Promise((resolve) => {
-    setTimeout(() => resolve());
+    setTimeout(() => resolve(), ms);
   });
 }
 
@@ -52,14 +53,14 @@ export default class Vue2048 {
 
   private getAddablePositions() {
     const positions = map(Array(this.size ** 2), (v, i) => i);
-    return filter(positions, (v) => !some(this.tiles, (e) => e.position === v && !!e.value));
+    return filter(positions, (v) => !some(this.tiles, (e) => e.position === v));
   }
 
   private addTile() {
     const positions = this.getAddablePositions();
 
     if (positions.length) {
-      const i = findIndex(this.tiles, (e) => !e.value);
+      const i = findIndex(this.tiles, (e) => !e.value || e.state === TileState.Old);
 
       this.tiles[i] = {
         value: Math.random() < AddTileFourProbablility ? 4 : 2,
@@ -137,8 +138,10 @@ export default class Vue2048 {
     await sleep();
 
     if (this.moveTiles(direction)) {
-      this.addTile();
       this.moves += 1;
+
+      await sleep(TileTransitionMilliseconds);
+      this.addTile();
     }
   }
 }

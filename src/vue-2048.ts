@@ -1,5 +1,5 @@
 import {
-  filter, find, findIndex, map, some, uniqueId,
+  filter, find, findIndex, map, some,
 } from 'lodash-es';
 
 const AddTileFourProbablility = 0.1;

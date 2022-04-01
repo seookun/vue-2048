@@ -11,15 +11,102 @@ body {
   background: #faf8ef;
   color: #776e65;
   font-family: "Clear Sans", "Helvetica Neue", Arial, sans-serif;
+  font-size: 18px;
+}
+
+#app {
+  width: $tile-size * 4 + $tile-space * 5;
+  margin: 0 auto;
+}
+
+// control-view
+.control-view {
+  position: relative;
+  width: 100%;
+  margin-top: 30px;
+
+  &::after {
+    content: "";
+    display: block;
+    clear: both;
+  }
+
+  .title {
+    width: 200px;
+    margin: 0;
+    float: left;
+    font-size: 80px;
+    font-weight: bold;
+  }
+
+  .infos {
+    display: flex;
+    float: right;
+
+    .score,
+    .moves {
+      position: relative;
+      display: block;
+      height: 25px;
+      margin-left: 5px;
+      padding: 15px 25px;
+      border-radius: 3px;
+      background: #bbada0;
+      color: white;
+      text-align: center;
+      font-size: 25px;
+      font-weight: bold;
+      line-height: 47px;
+
+      &::after {
+        position: absolute;
+        width: 100%;
+        top: 10px;
+        left: 0;
+        color: #eee4da;
+        font-size: 13px;
+        text-align: center;
+        text-transform: uppercase;
+        line-height: 13px;
+      }
+    }
+
+    .score::after {
+      content: "Score";
+    }
+
+    .moves::after {
+      content: "Moves";
+    }
+  }
+
+  .restart-button {
+    position: absolute;
+    right: 0;
+    bottom: -30px;
+    width: 110px;
+    height: 32px;
+    padding: 0 20px;
+    border-radius: 3px;
+    background: #8f7a66;
+    color: #f9f6f2;
+    font-weight: bold;
+    text-align: center;
+    text-decoration: none;
+    line-height: 32px;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
 }
 
 // tile view
 .tile-view {
   position: relative;
-  width: $tile-size * 4 + $tile-space * 3;
-  height: $tile-size * 4 + $tile-space * 3;
-  margin: 60px auto;
+  width: 100%;
+  height: $tile-size * 4 + $tile-space * 5;
+  margin-top: 40px;
   padding: $tile-space;
+  box-sizing: border-box;
   border-radius: 6px;
   background: #bbada0;
 }

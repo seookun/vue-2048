@@ -4,11 +4,9 @@ import {
 
 const AddTileFourProbablility = 0.1;
 
-function sleep(): Promise<void> {
+export function sleep(): Promise<void> {
   return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve();
-    });
+    setTimeout(() => resolve());
   });
 }
 
@@ -73,18 +71,6 @@ export default class Vue2048 {
     }
   }
 
-  private clearTiles() {
-    this.tiles = map(this.tiles, (e) => {
-      const isOldState = e.state === TileState.Old;
-
-      return {
-        value: isOldState ? 0 : e.value,
-        position: isOldState ? -1 : e.position,
-        state: TileState.None,
-      };
-    });
-  }
-
   private moveTile(position: number, moveWeight: number, moveCount: number) {
     const tile = find(this.tiles, ['position', position]);
     const isEmptyTile = !tile || !tile.value;
@@ -135,15 +121,25 @@ export default class Vue2048 {
       || e.state === TileState.Merged);
   }
 
+  clearTiles() {
+    this.tiles = map(this.tiles, (e) => {
+      const isOldState = e.state === TileState.Old;
+
+      return {
+        value: isOldState ? 0 : e.value,
+        position: isOldState ? -1 : e.position,
+        state: TileState.None,
+      };
+    });
+  }
+
   async move(direction: Direction) {
     this.clearTiles();
     await sleep();
 
     if (this.moveTiles(direction)) {
-      this.moves += 1;
-
-      await sleep();
       this.addTile();
+      this.moves += 1;
     }
   }
 }

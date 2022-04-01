@@ -1,5 +1,10 @@
 <template>
-  {{ score }}
+  <control-view
+    :score="score"
+    :moves="moves"
+    @restart="onRestart"
+  />
+
   <tile-view :tiles="tiles" />
 </template>
 
@@ -8,19 +13,24 @@ import {
   computed, defineComponent, onBeforeUnmount, onMounted, readonly, ref,
 } from 'vue';
 import { throttle } from 'lodash-es';
-import Vue2048 from '@/vue-2048';
+import Vue2048, { sleep } from '@/vue-2048';
 
+import ControlView from '@/components/ControlView.vue';
 import TileView from '@/components/TileView.vue';
 
 export default defineComponent({
   name: 'App',
   components: {
+    ControlView,
     TileView,
   },
   setup() {
     const vue2048 = ref(new Vue2048());
+
     const tiles = computed(() => readonly(vue2048.value.tiles));
+
     const score = computed(() => vue2048.value.score);
+    const moves = computed(() => vue2048.value.moves);
 
     // bind keydown event
     const onKeydown = throttle(async (ev: KeyboardEvent) => {
@@ -43,9 +53,19 @@ export default defineComponent({
       window.removeEventListener('keydown', onKeydown);
     });
 
+    // restart
+    const onRestart = async () => {
+      vue2048.value.clearTiles();
+      await sleep();
+
+      vue2048.value = new Vue2048();
+    };
+
     return {
       tiles,
       score,
+      moves,
+      onRestart,
     };
   },
 });

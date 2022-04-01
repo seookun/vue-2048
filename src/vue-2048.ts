@@ -1,14 +1,11 @@
 import {
-  filter, find, findIndex, map, some,
+  filter, find, map, some,
 } from 'lodash-es';
 
 const AddTileFourProbablility = 0.1;
-const TileTransitionMilliseconds = 100;
 
-export function sleep(ms = 0): Promise<void> {
-  return new Promise((resolve) => {
-    setTimeout(() => resolve(), ms);
-  });
+export function nextTick() {
+  return new Promise(requestAnimationFrame);
 }
 
 export enum TileState {
@@ -31,7 +28,7 @@ export type Direction = 0 | 1 | 2 | 3;
 export default class Vue2048 {
   size;
 
-  tiles: Tile[];
+  tiles: Tile[] = [];
 
   score = 0;
 
@@ -39,16 +36,7 @@ export default class Vue2048 {
 
   constructor(size = 4) {
     this.size = size;
-
-    this.tiles = map(Array(size ** 2), () => ({
-      value: 0,
-      position: -1,
-      state: TileState.None,
-    }));
-
-    for (let i = 0; i < 2; i += 1) {
-      this.addTile();
-    }
+    this.addTiles(2);
   }
 
   private getAddablePositions() {
@@ -60,18 +48,27 @@ export default class Vue2048 {
     const positions = this.getAddablePositions();
 
     if (positions.length) {
-      const i = findIndex(this.tiles, (e) => !e.value || e.state === TileState.Old);
-
-      this.tiles[i] = {
+      this.tiles.push({
         value: Math.random() < AddTileFourProbablility ? 4 : 2,
         // eslint-disable-next-line no-bitwise
         position: positions[~~(Math.random() * positions.length)],
         state: TileState.New,
-      };
+      });
     }
   }
 
-  private moveTile(position: number, moveWeight: number, moveCount: number) {
+  private addTiles(amount: number) {
+    for (let i = 0; i < amount; i += 1) {
+      this.addTile();
+    }
+  }
+
+  private clearTiles() {
+    this.tiles = filter(this.tiles, (e) => e.state !== TileState.Old);
+    this.tiles = map(this.tiles, (e) => ({ ...e, state: TileState.None }));
+  }
+
+  private async moveTile(position: number, moveWeight: number, moveCount: number) {
     const tile = find(this.tiles, ['position', position]);
     const isEmptyTile = !tile || !tile.value;
 
@@ -121,27 +118,13 @@ export default class Vue2048 {
       || e.state === TileState.Merged);
   }
 
-  clearTiles() {
-    this.tiles = map(this.tiles, (e) => {
-      const isOldState = e.state === TileState.Old;
-
-      return {
-        value: isOldState ? 0 : e.value,
-        position: isOldState ? -1 : e.position,
-        state: TileState.None,
-      };
-    });
-  }
-
   async move(direction: Direction) {
     this.clearTiles();
-    await sleep();
+    await nextTick();
 
     if (this.moveTiles(direction)) {
-      this.moves += 1;
-
-      await sleep(TileTransitionMilliseconds);
       this.addTile();
+      this.moves += 1;
     }
   }
 }

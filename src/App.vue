@@ -5,14 +5,17 @@
     @restart="onRestart"
   />
 
-  <tile-view :tiles="tiles" />
+  <tile-view
+    :key="resetCount"
+    :tiles="tiles"
+  />
 </template>
 
 <script lang="ts">
 import {
-  computed, defineComponent, onBeforeUnmount, onMounted, readonly, ref,
+  computed, defineComponent, onBeforeUnmount, onMounted, ref,
 } from 'vue';
-import Vue2048, { sleep } from '@/vue-2048';
+import Vue2048 from '@/vue-2048';
 
 import ControlView from '@/components/ControlView.vue';
 import TileView from '@/components/TileView.vue';
@@ -25,8 +28,7 @@ export default defineComponent({
   },
   setup() {
     const vue2048 = ref(new Vue2048());
-
-    const tiles = computed(() => readonly(vue2048.value.tiles));
+    const tiles = computed(() => vue2048.value.tiles);
     const score = computed(() => vue2048.value.score);
     const moves = computed(() => vue2048.value.moves);
 
@@ -52,17 +54,17 @@ export default defineComponent({
     });
 
     // restart
+    const resetCount = ref(0);
     const onRestart = async () => {
-      vue2048.value.clearTiles();
-      await sleep();
-
       vue2048.value = new Vue2048();
+      resetCount.value += 1;
     };
 
     return {
       tiles,
       score,
       moves,
+      resetCount,
       onRestart,
     };
   },

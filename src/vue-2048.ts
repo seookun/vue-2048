@@ -1,5 +1,5 @@
 import {
-  every, filter, find, findIndex, map, some,
+  filter, find, findIndex, map, some,
 } from 'lodash-es';
 
 const AddTileFourProbablility = 0.1;
@@ -50,22 +50,21 @@ export default class Vue2048 {
     }
   }
 
+  private getAddablePositions() {
+    const positions = map(Array(this.size ** 2), (v, i) => i);
+    return filter(positions, (v) => !some(this.tiles, (e) => e.position === v && !!e.value));
+  }
+
   private addTile() {
-    const isFull = every(this.tiles, (e) => !!e.value);
+    const positions = this.getAddablePositions();
 
-    if (isFull) return;
+    if (positions.length) {
+      const i = findIndex(this.tiles, (e) => !e.value);
 
-    const position = Math.floor(Math.random() * 16);
-    const isAddable = !some(this.tiles, (e) => e.position === position && !!e.value);
-
-    if (!isAddable) {
-      this.addTile();
-    } else {
-      const index = findIndex(this.tiles, (e) => !e.value);
-
-      this.tiles[index] = {
+      this.tiles[i] = {
         value: Math.random() < AddTileFourProbablility ? 4 : 2,
-        position,
+        // eslint-disable-next-line no-bitwise
+        position: positions[~~(Math.random() * positions.length)],
         state: TileState.New,
       };
     }

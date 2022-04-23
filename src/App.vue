@@ -5,32 +5,41 @@
     @new-game="onNewGame"
   />
 
-  <tile-view
-    :key="resetCount"
-    :tiles="tiles"
-  />
+  <div class="game-view">
+    <tile-view
+      :key="resetCount"
+      :tiles="tiles"
+    />
+
+    <game-end-overlay
+      :stuck="stuck"
+    />
+  </div>
 </template>
 
 <script lang="ts">
 import {
-  computed, defineComponent, onBeforeUnmount, onMounted, ref,
+  computed, defineComponent, onBeforeUnmount, onMounted, ref, watch, watchEffect,
 } from 'vue';
 import Vue2048 from '@/vue-2048';
 
 import ControlView from '@/components/ControlView.vue';
 import TileView from '@/components/TileView.vue';
+import GameEndOverlay from '@/components/GameEndOverlay.vue';
 
 export default defineComponent({
   name: 'App',
   components: {
     ControlView,
     TileView,
+    GameEndOverlay,
   },
   setup() {
     const vue2048 = ref(new Vue2048());
     const tiles = computed(() => vue2048.value.tiles);
     const score = computed(() => vue2048.value.score);
     const moves = computed(() => vue2048.value.moves);
+    const stuck = computed(() => vue2048.value.stuck);
 
     // bind keydown event
     const onKeydown = async (ev: KeyboardEvent) => {
@@ -53,9 +62,9 @@ export default defineComponent({
       window.removeEventListener('keydown', onKeydown);
     });
 
-    // restart
+    // new game
     const resetCount = ref(0);
-    const onNewGame = async () => {
+    const onNewGame = () => {
       vue2048.value = new Vue2048();
       resetCount.value += 1;
     };
@@ -64,6 +73,7 @@ export default defineComponent({
       tiles,
       score,
       moves,
+      stuck,
       resetCount,
       onNewGame,
     };

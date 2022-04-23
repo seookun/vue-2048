@@ -247,6 +247,37 @@ body {
   }
 }
 
+.game-view {
+  position: relative;
+}
+
+.game-end-overlay {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 100;
+  opacity: 0;
+  border-radius: 6px;
+  background: rgb(238 228 218 / 73%);
+
+  &.show-overlay {
+    opacity: 1;
+    transition: opacity 1s ease-out 0.5s;
+  }
+
+  .game-end-message {
+    height: 60px;
+    font-size: 60px;
+    font-weight: bold;
+    line-height: 60px;
+  }
+}
+
 @keyframes new {
   from { transform: scale(0); }
   to { transform: scale(1); }

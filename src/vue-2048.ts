@@ -1,5 +1,5 @@
 import {
-  filter, find, map, some,
+  every, filter, find, forEach, map, some, sortBy,
 } from 'lodash-es';
 
 const AddTileFourProbablility = 0.1;
@@ -34,8 +34,19 @@ export default class Vue2048 {
 
   moves = 0;
 
+  stuck = false;
+
+  startPositions: number[];
+
+  startPositionWeights: number[];
+
+  moveWeights: number[];
+
   constructor(size = 4) {
     this.size = size;
+    this.startPositions = [1, size, size - 2, size * (size - 2)];
+    this.startPositionWeights = [size, 1, size, 1];
+    this.moveWeights = [-1, -size, 1, size];
     this.addTiles(2);
   }
 
@@ -66,6 +77,26 @@ export default class Vue2048 {
   private clearTiles() {
     this.tiles = filter(this.tiles, (e) => e.state !== TileState.Old);
     this.tiles = map(this.tiles, (e) => ({ ...e, state: TileState.None }));
+  }
+
+  private getMovePositions(direction: Direction) {
+    const positions: number[][] = [];
+
+    const { size } = this;
+    const startPosition = this.startPositions[direction];
+    const startPositionWeight = this.startPositionWeights[direction];
+    const moveWeight = this.moveWeights[direction];
+
+    for (let i = 0; i < size; i += 1) {
+      for (let j = 0; j < size - 1; j += 1) {
+        const position = startPosition + i * startPositionWeight - j * moveWeight;
+        const moveCount = j + 1;
+
+        positions.push([position, moveCount]);
+      }
+    }
+
+    return positions;
   }
 
   private async moveTile(position: number, moveWeight: number, moveCount: number) {
@@ -100,31 +131,42 @@ export default class Vue2048 {
   }
 
   private moveTiles(direction: Direction) {
+    const moveWeight = this.moveWeights[direction];
+    const movePositions = this.getMovePositions(direction);
+
+    forEach(movePositions, ([position, moveCount]) => {
+      this.moveTile(position, moveWeight, moveCount);
+    });
+
+    return some(this.tiles, (e) => e.state === TileState.Moved || e.state === TileState.Merged);
+  }
+
+  private isStuck() {
     const { size } = this;
-    const startPosition = [1, size, size - 2, size * (size - 2)][direction];
-    const startPositionWeight = [4, 1, 4, 1][direction];
-    const moveWeight = [-1, -size, 1, size][direction];
+    const tiles = sortBy(filter(this.tiles, (e) => e.state !== TileState.Old), ['position']);
 
-    for (let i = 0; i < size; i += 1) {
-      for (let j = 0; j < size - 1; j += 1) {
-        const position = startPosition + i * startPositionWeight - j * moveWeight;
-        const moveCount = j + 1;
+    return tiles.length === size ** 2
+      && every([0, 1, 2, 3], (direction: Direction) => {
+        const moveWeight = this.moveWeights[direction];
+        const movePositions = this.getMovePositions(direction);
 
-        this.moveTile(position, moveWeight, moveCount);
-      }
-    }
-
-    return some(this.tiles, (e) => e.state === TileState.Moved
-      || e.state === TileState.Merged);
+        return !some(
+          movePositions,
+          ([position]) => tiles[position].value === tiles[position + moveWeight].value,
+        );
+      });
   }
 
   async move(direction: Direction) {
+    if (this.stuck) return;
+
     this.clearTiles();
     await nextTick();
 
     if (this.moveTiles(direction)) {
       this.addTile();
       this.moves += 1;
+      this.stuck = this.isStuck();
     }
   }
 }

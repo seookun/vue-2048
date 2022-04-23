@@ -2,7 +2,7 @@
   <control-view
     :score="score"
     :moves="moves"
-    @restart="onRestart"
+    @new-game="onNewGame"
   />
 
   <tile-view
@@ -55,7 +55,7 @@ export default defineComponent({
 
     // restart
     const resetCount = ref(0);
-    const onRestart = async () => {
+    const onNewGame = async () => {
       vue2048.value = new Vue2048();
       resetCount.value += 1;
     };
@@ -65,7 +65,7 @@ export default defineComponent({
       score,
       moves,
       resetCount,
-      onRestart,
+      onNewGame,
     };
   },
 });

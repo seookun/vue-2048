@@ -39,7 +39,7 @@ body {
     font-weight: bold;
   }
 
-  .infos {
+  .score-view {
     display: flex;
     float: right;
 
@@ -80,16 +80,16 @@ body {
     }
   }
 
-  .intro {
+  .intro-view {
     display: flex;
     width: 100%;
     justify-content: space-between;
 
-    p {
+    .intro-message {
       margin: 0;
     }
 
-    a {
+    .new-game {
       bottom: -30px;
       height: 40px;
       float: right;

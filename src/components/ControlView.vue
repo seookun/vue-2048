@@ -4,7 +4,7 @@
       2048
     </h1>
 
-    <div class="infos">
+    <div class="score-view">
       <div class="score">
         {{ score }}
       </div>
@@ -14,14 +14,15 @@
       </div>
     </div>
 
-    <div class="intro">
-      <p>
+    <div class="intro-view">
+      <p class="intro-message">
         Join the tiles, get to <strong>2048!</strong>
       </p>
 
       <a
-        @click="emitRestart"
-        @keyup="emitRestart"
+        class="new-game"
+        @click="emitNewGame"
+        @keyup="emitNewGame"
       >
         New Game
       </a>
@@ -44,14 +45,14 @@ export default defineComponent({
       required: true,
     },
   },
-  emits: ['restart'],
+  emits: ['new-game'],
   setup(props, context) {
-    const emitRestart = () => {
-      context.emit('restart');
+    const emitNewGame = () => {
+      context.emit('new-game');
     };
 
     return {
-      emitRestart,
+      emitNewGame,
     };
   },
 });

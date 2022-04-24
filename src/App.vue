@@ -18,14 +18,13 @@
 </template>
 
 <script lang="ts">
-import {
-  computed, defineComponent, onBeforeUnmount, onMounted, ref, watch, watchEffect,
-} from 'vue';
-import Vue2048 from '@/vue-2048';
-
 import ControlView from '@/components/ControlView.vue';
-import TileView from '@/components/TileView.vue';
 import GameEndOverlay from '@/components/GameEndOverlay.vue';
+import TileView from '@/components/TileView.vue';
+import Vue2048 from '@/vue-2048';
+import {
+  computed, defineComponent, onBeforeUnmount, onMounted, ref,
+} from 'vue';
 
 export default defineComponent({
   name: 'App',

@@ -14,9 +14,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue';
 import { Tile } from '@/vue-2048';
-
+import { defineComponent, PropType } from 'vue';
 import TileViewItem from './TileViewItem.vue';
 
 export default defineComponent({

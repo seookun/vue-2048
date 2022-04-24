@@ -10,9 +10,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue';
-import { filter } from 'lodash-es';
 import { Tile, TileState } from '@/vue-2048';
+import { filter } from 'lodash-es';
+import { defineComponent, PropType } from 'vue';
 
 export default defineComponent({
   name: 'TileViewItem',

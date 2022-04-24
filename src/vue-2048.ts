@@ -4,7 +4,7 @@ import {
 
 const AddTileFourProbablility = 0.1;
 
-export function nextTick() {
+function nextTick() {
   return new Promise(requestAnimationFrame);
 }
 
